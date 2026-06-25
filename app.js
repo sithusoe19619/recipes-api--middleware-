@@ -18,17 +18,17 @@ app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`)
 })
 
-function ownMiddleware(req,res,next){
-  console.log(req.method, req.originalUrl)
-  next()
-}
-app.use(ownMiddleware)
-
 function exampleMiddleware(req, res, next) {
   console.log("a request came in");
   next();
 }
 app.use(exampleMiddleware)
+
+function ownMiddleware(req,res,next){
+  console.log(req.method, req.originalUrl)
+  next()
+}
+app.use(ownMiddleware)
 
 app.get("/", (req, res) => {
   res.json("Recipe API is running!")
@@ -51,6 +51,19 @@ app.get("/api/recipes/:id", (req, res) => {
     res.status(404).json("Recipe not found!")
   }
 })
+
+function routeSpecificMiddleware(req, res, newRecipe){
+  const title = req.body.title
+  const cuisine = req.body.cuisine
+
+  if (title === "" || cuisine === "") {
+    res.status(404).json({error: "Title or Cuisine is empty!"})
+  return
+  }
+  next()
+}
+
+app.use(routeSpecificMiddleware)
 
 app.post("/api/recipes", (req,res) => {
   // const title = req.body.title
