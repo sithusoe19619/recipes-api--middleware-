@@ -18,6 +18,18 @@ app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`)
 })
 
+function ownMiddleware(req,res,next){
+  console.log(req.method, req.originalUrl)
+  next()
+}
+app.use(ownMiddleware)
+
+function exampleMiddleware(req, res, next) {
+  console.log("a request came in");
+  next();
+}
+app.use(exampleMiddleware)
+
 app.get("/", (req, res) => {
   res.json("Recipe API is running!")
 })
